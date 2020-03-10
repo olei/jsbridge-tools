@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="./css/style.css">
+  </head>
+  <body>
+    <div id="reloadBtn"><span>点击启动</span></div>
+    <div class="box" id="info" style="display: none;">
+      <div class="tabs">
+        <div class="tab record cur">
+          <img src="./icons/record.svg" alt="">
+        </div>
+        <div class="tab list">
+          <img src="./icons/setting.svg" alt="">
+        </div>
+      </div>
+      <div id="main">
+        <div class="clear" id="clear">清除</div>
+        <ul class="record">
+        </ul>
+      </div>
+      <div id="sdk" style="display: none;"></div>
+    </div>
+    <script src="./scripts/jsbridgetools.js"></script>
+  </body>
+</html>

@@ -1,0 +1,147 @@
+body {
+  background: #f8f8f8;
+  font-family: AmericanTypewriter;
+  padding: 0;
+  margin: 0;
+}
+
+ul li {
+  list-style: none;
+}
+#reloadBtn {
+  text-align: center;
+  line-height: 200px;
+  color: #74787c;
+  font-size: 12px;
+}
+#reloadBtn span {
+  cursor: pointer;
+}
+.box {
+  overflow: hidden;
+}
+.tabs {
+  position: fixed;
+  background-color: #f8cb4a;
+  display: flex;
+  width: 100%;
+  height: 44px;
+  top: 0;
+  left: 0;
+}
+.tab {
+  cursor: pointer;
+}
+.tabs .tab img {
+  width: 24px;
+  height: 24px;
+  margin: 10px;
+  float: left;
+}
+.cur {
+  background-color: #f8df9e;
+}
+
+#main  {
+  margin-top: 44px;
+}
+
+#sdk {
+  margin-top: 60px;
+}
+
+.record {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.record li {
+  display: flex;
+  background-color: #fff;
+  margin: 15px 10px;
+  min-height: 60px;
+  padding-bottom: 6px;
+}
+
+.status {
+  display: flex;
+  width: 50px;
+  height: 50px;
+  color: #fff;
+  align-items: center;
+  justify-content: center;
+}
+
+.txt {
+  margin: 0 0 6px;
+}
+
+.status img {
+  width: 25px;
+  height: 25px;
+}
+
+.info .title {
+  line-height: 30px;
+  font-size: 14px;
+}
+.info .desc {
+  font-size: 14px;
+  line-height: 21px;
+  display: flex;
+}
+.desc img {
+  width: 15px;
+  height: 15px;
+  margin-top: 2px;
+}
+.err {
+  margin: 0 0 0 6px;
+  font-size: 12px;
+}
+
+.clear {
+  cursor: pointer;
+  position: fixed;
+  right: 10px;
+  top: 50px;
+  color: #666;
+  font-size: 12px;
+  float: right;
+  margin: 6px 6px 0 0;
+  background: #eee;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 20px;
+  text-align: center;
+  line-height: 30px;
+  font-size: 12px;
+}
+
+.cbStatus {
+  color: #843900;
+}
+
+.ctrlList {
+  display: flex;
+  height: 36px;
+  margin-left: 20px;
+}
+.ctrlList .name {
+  width: 150px;
+  margin-right: 10px;
+  line-height: 24px;
+  text-align: right;
+}
+.ctrlList input {
+  width: 100px;
+  height: 20px;
+  border-radius: 2px;
+  border: 1px solid #eee;
+  background: #fff;
+}
+.cbStatusBox {
+  font-size: 12px;
+}
