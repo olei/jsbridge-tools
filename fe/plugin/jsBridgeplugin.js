@@ -1,5 +1,5 @@
 
-const bridgeToolHook = window.__jzb_js_bridge__
+const bridgeToolHook = window.__olei_js_bridge__
 
 export default function jsbridgePlugin(bridge) {
   if (!bridgeToolHook) return

@@ -1,5 +1,5 @@
-window.__jzb_js_bridge__ = {
-  name: 'jzb_jsbridge',
+window.__olei_js_bridge__ = {
+  name: 'olei_jsbridge',
   topics: {},
   handlerQueue: {},
   params: {},
@@ -18,8 +18,8 @@ window.__jzb_js_bridge__ = {
   init: function() {
     var _that = this
     var readyBridge = document.createEvent('Events')
-    readyBridge.initEvent('JZBAppWebViewJSBridgeReady')
-    window.JZBAppWebViewJSBridge = {
+    readyBridge.initEvent('OLEIAppWebViewJSBridgeReady')
+    window.OLEIAppWebViewJSBridge = {
       callHandler: function(...args) {
         _that.snapshot(...args)
         const id = args.shift()
@@ -29,11 +29,11 @@ window.__jzb_js_bridge__ = {
     document.dispatchEvent(readyBridge)
     window.addEventListener('message', function(e) {
       if (!e || !e.data) return
-      if (e.data.__jzb_source__ === 'jzb_sId') {
+      if (e.data.__olei_source__ === 'olei_sId') {
         _that.runQueue(e.data.sId, e.data.succses)
-      } else if (e.data.__jzb_source__ === 'jzb_setup') {
+      } else if (e.data.__olei_source__ === 'olei_setup') {
         _that.params[e.data.name] = e.data.value.split(';')
-      } else if (e.data.__jzb_source__ === 'jzb_reload') {
+      } else if (e.data.__olei_source__ === 'olei_reload') {
         window.location.reload(true)
       }
     }, false)
@@ -42,17 +42,17 @@ window.__jzb_js_bridge__ = {
   },
   runQueue(sid, succses) {
     if (!succses) {
-      delete window.__jzb_js_bridge__.handlerQueue[sid]
+      delete window.__olei_js_bridge__.handlerQueue[sid]
       return
     }
 
-    var name = window.__jzb_js_bridge__.handlerQueue[sid][0]
-    window.__jzb_js_bridge__.handlerQueue[sid].forEach(item => {
+    var name = window.__olei_js_bridge__.handlerQueue[sid][0]
+    window.__olei_js_bridge__.handlerQueue[sid].forEach(item => {
       if (typeof item === 'function') {
         if (this.params[name] && this.params[name].length) item(...this.params[name])
         else item()
         var opt = {
-          '__jzb_source__': this.name,
+          '__olei_source__': this.name,
           isCallbackStatus: true,
           sId: sid,
           params: []
@@ -72,7 +72,7 @@ window.__jzb_js_bridge__ = {
     }
     else params = {}
     var opt = {
-      '__jzb_source__': this.name,
+      '__olei_source__': this.name,
       sId: sId,
       handlerName: handlerName,
       isCallback: !!fn.length,
@@ -92,10 +92,10 @@ window.__jzb_js_bridge__ = {
       apis.push(obj)
     }
     window.postMessage({
-      '__jzb_source__': this.name,
+      '__olei_source__': this.name,
       apis: apis
     }, '*')
   }
 }
 
-window.__jzb_js_bridge__.init()
+window.__olei_js_bridge__.init()

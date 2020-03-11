@@ -25,18 +25,18 @@ window.addEventListener('beforeunload', function(e) {
 })
 
 window.addEventListener('message', function(e) {
-  if (e && e.data && e.data.__jzb_source__ === 'jzb_jsbridge') {
+  if (e && e.data && e.data.__olei_source__ === 'olei_jsbridge') {
     chrome.runtime.sendMessage(e.data)
 	}
 }, false)
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	if(request.type === 'snapshot') {
-		window.postMessage({__jzb_source__: 'jzb_sId', sId: request.snapshot, succses: request.succses}, '*')
+		window.postMessage({__olei_source__: 'olei_sId', sId: request.snapshot, succses: request.succses}, '*')
 	} else if(request.type === 'setup') {
-		window.postMessage({__jzb_source__: 'jzb_setup', name: request.name, value: request.value}, '*')
+		window.postMessage({__olei_source__: 'olei_setup', name: request.name, value: request.value}, '*')
 	} else if(request.type === 'reload') {
-		window.postMessage({__jzb_source__: 'jzb_reload'}, '*')
+		window.postMessage({__olei_source__: 'olei_reload'}, '*')
 	}
 	sendResponse('收到消息！')
 })

@@ -1,5 +1,5 @@
 javascript: !function(W, D, undefined) {
-  if (!W.JZBAppWebViewJSBridge) {
+  if (!W.OLEIAppWebViewJSBridge) {
     var initQueue = [];
     // 发送消息队列
     var sendMessageQueue = [];
@@ -9,7 +9,7 @@ javascript: !function(W, D, undefined) {
     var responseCallbacks = {};
     // 消息id
     var puniqueId = 1;
-    var JZBAppWebViewJSBridge = W.JZBAppWebViewJSBridge = {
+    var OLEIAppWebViewJSBridge = W.OLEIAppWebViewJSBridge = {
         init: init,
         send: send,
         registerHandler: registerHandler,
@@ -18,14 +18,14 @@ javascript: !function(W, D, undefined) {
         _handleMessageFromObjC: _handleMessageFromObjC
     };
     var readyBridge = D.createEvent("Events");
-    readyBridge.initEvent("JZBAppWebViewJSBridgeReady"),
-    readyBridge.bridge = JZBAppWebViewJSBridge,
+    readyBridge.initEvent("OLEIAppWebViewJSBridgeReady"),
+    readyBridge.bridge = OLEIAppWebViewJSBridge,
     D.dispatchEvent(readyBridge)
   }
 
   function init(e) {
-    if (JZBAppWebViewJSBridge._messageHandler) throw new Error("JZBAppWebViewJSBridge.init called twice");
-    JZBAppWebViewJSBridge._messageHandler = e;
+    if (OLEIAppWebViewJSBridge._messageHandler) throw new Error("OLEIAppWebViewJSBridge.init called twice");
+    OLEIAppWebViewJSBridge._messageHandler = e;
     var msgQueue = initQueue;
     initQueue = undefined;
     for (var i = 0; i < msgQueue.length; i++) _dispatchMessageFromNative(msgQueue[i])
@@ -99,7 +99,7 @@ javascript: !function(W, D, undefined) {
           };
         }
 
-        var handler = JZBAppWebViewJSBridge._messageHandler;
+        var handler = OLEIAppWebViewJSBridge._messageHandler;
         if (message.handlerName) {
           handler = messageHandlers[message.handlerName];
         }
@@ -109,7 +109,7 @@ javascript: !function(W, D, undefined) {
           handler(message.data, responseCallback);
         } catch (exception) {
           if (typeof console !== 'undefined') {
-            console.error("JZBAppWebViewJSBridge: WARNING: javascript handler threw.", message, exception);
+            console.error("OLEIAppWebViewJSBridge: WARNING: javascript handler threw.", message, exception);
           }
         }
       }

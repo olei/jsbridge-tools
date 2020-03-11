@@ -1,5 +1,5 @@
 !function(W, D, undefined) {
-  var JZBAppWebViewJSBridge = W.JZBAppWebViewJSBridge = {
+  var OLEIAppWebViewJSBridge = W.OLEIAppWebViewJSBridge = {
     registerHandler: registerHandler,
     callHandler: callHandler,
     disableJavscriptAlertBoxSafetyTimeout: function() {},
@@ -8,8 +8,8 @@
   };
 
   var readyBridge = D.createEvent('Events');
-  readyBridge.initEvent('JZBAppWebViewJSBridgeReady');
-  readyBridge.bridge = JZBAppWebViewJSBridge;
+  readyBridge.initEvent('OLEIAppWebViewJSBridgeReady');
+  readyBridge.bridge = OLEIAppWebViewJSBridge;
   D.dispatchEvent(readyBridge);
 
   var CUSTOM_PROTOCOL_SCHEME = 'https';
@@ -89,7 +89,7 @@
           handler(message.data, responseCallback);
         } catch (exception) {
           if (typeof console != 'undefined') {
-            console.error("JZBAppWebViewJSBridge: WARNING: javascript handler threw.", message, exception);
+            console.error("OLEIAppWebViewJSBridge: WARNING: javascript handler threw.", message, exception);
           }
         }
       }

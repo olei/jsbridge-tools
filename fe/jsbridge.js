@@ -53,11 +53,11 @@ class ConnectClass extends EventsClass {
     this._messge('jsbridge 开始创建连接...')
     this.status = 0
     return new Promise((resolve, reject) => {
-      if (window.JZBAppWebViewJSBridge) {
+      if (window.OLEIAppWebViewJSBridge) {
         resolve(true)
         _succses.call(this)
       } else {
-        document.addEventListener('JZBAppWebViewJSBridgeReady', () => {
+        document.addEventListener('OLEIAppWebViewJSBridgeReady', () => {
           resolve(true)
           _succses.call(this)
         }, false)
@@ -70,7 +70,7 @@ class ConnectClass extends EventsClass {
         }, 5000)
       }
     }).catch(e => {
-      this._messge(`JZBAppWebViewJSBridge: WARNING: ${e}`, 'warn')
+      this._messge(`OLEIAppWebViewJSBridge: WARNING: ${e}`, 'warn')
     })
 
     function _succses() {
@@ -100,7 +100,7 @@ class ConnectClass extends EventsClass {
     options && opt.push(JSON.stringify(options))
     opt.push(callback)
     setTimeout(() => {
-      window.JZBAppWebViewJSBridge.callHandler(...opt)
+      window.OLEIAppWebViewJSBridge.callHandler(...opt)
     }, 10)
   }
   /**
@@ -127,7 +127,7 @@ class ConnectClass extends EventsClass {
     return navigator.userAgent.toLowerCase()
   }
   get isJzb() {
-    return this.UA.match(/patriarch/i) || window.__jzb_js_bridge__
+    return this.UA.match(/patriarch/i) || window.__olei_js_bridge__
   }
   get isMiniProgran() {
     return this.UA.match(/miniProgram/)
@@ -175,9 +175,9 @@ class JzbBridgeClass extends ConnectClass {
       return
     }
     this._lock && clearTimeout(this._lock)
-    if (!args || !args.length) throw new Error('JZBAppWebViewJSBridge dispatch 缺少必要参数')
+    if (!args || !args.length) throw new Error('OLEIAppWebViewJSBridge dispatch 缺少必要参数')
     const handlerName = args.shift()
-    if (typeof handlerName !== 'string') throw new TypeError('JZBAppWebViewJSBridge dispatch 参数错误')
+    if (typeof handlerName !== 'string') throw new TypeError('OLEIAppWebViewJSBridge dispatch 参数错误')
     this._handlerQueue.push([handlerName].concat([...args]))
     this._lock = setTimeout(this._dispatch.bind(this), 200)
   }
@@ -190,7 +190,7 @@ class JzbBridgeClass extends ConnectClass {
       const status = this.publish(handlerName, ...item)
       // 快照打印
       // this.publish('snapshot', handlerName, ...item)
-      if (!status) this._messge(`JZBAppWebViewJSBridge ${handlerName}: 方法不存在`, 'error')
+      if (!status) this._messge(`OLEIAppWebViewJSBridge ${handlerName}: 方法不存在`, 'error')
     })
   }
   // 方法禁止传入对象
