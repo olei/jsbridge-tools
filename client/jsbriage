@@ -1,0 +1,128 @@
+javascript: !function(W, D, undefined) {
+  if (!W.JZBAppWebViewJSBridge) {
+    var initQueue = [];
+    // 发送消息队列
+    var sendMessageQueue = [];
+    var messageHandlers = {};
+    var CUSTOM_PROTOCOL_SCHEME = "wvjbscheme";
+    // 回调集
+    var responseCallbacks = {};
+    // 消息id
+    var puniqueId = 1;
+    var JZBAppWebViewJSBridge = W.JZBAppWebViewJSBridge = {
+        init: init,
+        send: send,
+        registerHandler: registerHandler,
+        callHandler: callHandler,
+        _fetchQueue: _fetchQueue,
+        _handleMessageFromObjC: _handleMessageFromObjC
+    };
+    var readyBridge = D.createEvent("Events");
+    readyBridge.initEvent("JZBAppWebViewJSBridgeReady"),
+    readyBridge.bridge = JZBAppWebViewJSBridge,
+    D.dispatchEvent(readyBridge)
+  }
+
+  function init(e) {
+    if (JZBAppWebViewJSBridge._messageHandler) throw new Error("JZBAppWebViewJSBridge.init called twice");
+    JZBAppWebViewJSBridge._messageHandler = e;
+    var msgQueue = initQueue;
+    initQueue = undefined;
+    for (var i = 0; i < msgQueue.length; i++) _dispatchMessageFromNative(msgQueue[i])
+  }
+
+  function send(data, responseCallback) {
+    _doSend({
+      data: data
+    }, responseCallback)
+  }
+
+  // 注册线程 往数组里面添加值
+  function registerHandler(handlerName, handler) {
+    messageHandlers[handlerName] = handler;
+  }
+
+  function callHandler(handlerName, data, responseCallback) {
+    if (arguments.length === 2 && typeof data === 'function') {
+      responseCallback = data;
+      data = undefined;
+    }
+
+    _doSend({
+      handlerName: handlerName,
+      data: data
+    }, responseCallback);
+  }
+  
+  function _doSend(message, responseCallback) {
+    if (responseCallback) {
+        var callbackId = 'cb_' + (uniqueId++) + '_' + new Date().getTime();
+        responseCallbacks[callbackId] = responseCallback;
+        message.callbackId = callbackId;
+    }
+    for (var key in message) sendMessageQueue.push(key + ":" + message[key]);
+    createMessagingIframe("{" + sendMessageQueue.join(",") + "}")
+  }
+
+  // Native通过以下方法统一处理存储在sendMessageQueue中的数据
+  function _fetchQueue() {
+		var messageQueueString = JSON.stringify(sendMessageQueue);
+		sendMessageQueue = [];
+		return messageQueueString;
+  }
+
+  function _handleMessageFromObjC(messageJSON) {
+    initQueue ? initQueue.push(messageJSON) : _dispatchMessageFromNative(messageJSON)
+  }
+
+  function _dispatchMessageFromNative(messageJSON) {
+    setTimeout(function() {
+      var message = JSON.parse(messageJSON);
+      var responseCallback;
+      // 前端主动调用
+      if (message.responseId) {
+        responseCallback = responseCallbacks[message.responseId];
+        if (!responseCallback) {
+          return;
+        }
+        responseCallback(message.responseData);
+        delete responseCallbacks[message.responseId];
+      } else {
+        // Native主动调用
+        if (message.callbackId) {
+          var callbackResponseId = message.callbackId;
+          responseCallback = function(responseData) {
+            _doSend({
+              responseId: callbackResponseId,
+              responseData: responseData
+            });
+          };
+        }
+
+        var handler = JZBAppWebViewJSBridge._messageHandler;
+        if (message.handlerName) {
+          handler = messageHandlers[message.handlerName];
+        }
+
+        //查找指定handler
+        try {
+          handler(message.data, responseCallback);
+        } catch (exception) {
+          if (typeof console !== 'undefined') {
+            console.error("JZBAppWebViewJSBridge: WARNING: javascript handler threw.", message, exception);
+          }
+        }
+      }
+    });
+  }
+
+  function createMessagingIframe(queueMessage) {
+    var messagingIframe = D.createElement('iframe')
+    messagingIframe.display = 'none'
+    messagingIframe.src = CUSTOM_PROTOCOL_SCHEME + "://" + queueMessage;
+    D.body.appendChild(messagingIframe)
+    setTimeou(function() {
+      D.body.removeChild(messagingIframe)
+    }, 200)
+  }
+}(window, document)
