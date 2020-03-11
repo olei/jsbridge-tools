@@ -37,7 +37,7 @@ window.__jzb_js_bridge__ = {
         window.location.reload(true)
       }
     }, false)
-    this.on('jsbridge:snapshot', this.snapshot.bind(this))
+    // this.on('jsbridge:snapshot', this.snapshot.bind(this))
     this.on('jsbridge:init', this.sdklist.bind(this))
   },
   runQueue(sid, succses) {

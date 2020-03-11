@@ -3,10 +3,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     tools.apis && tools.handleSnapshot(request)
   }
   if (request.apis && request.apis.length) {
-    var metheds = ''
-    for(var i = 0; i < request.apis.length; i++) {
-      metheds += (request.apis[i].handlerName + request.apis[i].desc + JSON.stringify(request.apis[i].scheme))
-    }
     tools.init(request.apis)
   }
   if (request.isCallbackStatus) {
@@ -14,6 +10,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   }
   if (request.reload) {
     // window.location.reload(true)
+    // XXX
     tools.clearList()
     tools.clearSetup()
   }
@@ -93,7 +90,7 @@ var tools = {
     var htm = afterHtm + `</div>
     <div class="info"><div class="title">调用方法名：${snapshot.handlerName}</div>`
     htm += snapshot.isCallback ? `<div class="cbStatusBox">执行回调：<span class="cbStatus">未执行</span></div>` : ''
-    htm += JSON.stringify(snapshot.params) !== '{}' ? `<div>传入参数：${JSON.stringify(snapshot.params)}</div>` : ''
+    htm += JSON.stringify(snapshot.params) !== '{}' ? `<div style="word-break:break-all;">传入参数：${JSON.stringify(snapshot.params)}</div>` : ''
     htm += `<div style="font-size: 12px">方法描述：${desc}</div>`
     htm += err || ''
     htm += `</div>`
@@ -130,31 +127,26 @@ var tools = {
     var handlerName = snapshot.handlerName
     var o = this.getObj(handlerName)
 
-    if (!o) return ['没有这个方法']
     // 没有scheme协商
     if (!o.scheme) return false
+    if (!o) return ['没有这个方法']
+
     var status = []
     if (!o.scheme.callback && snapshot.isCallback) status.push('不接受callback')
     delete o.scheme.callback
-    // var params = Object.entries(o.scheme)
     for(var key in o.scheme) {
-      if (!snapshot.params[key]) status.push(`${key}: 没有传这个参数`)
-      else if (typeof snapshot.params[key] !== o.scheme[key]) status.push(`${key}: 参数类型应为${o.scheme[key]}。`)
+      if (typeof snapshot.params[key] === 'undefined') status.push(`${key}: 没有传这个参数`)
+      else {
+        const types = o.scheme[key].split('|')
+        let hasParams = false
+
+        types.forEach(item => {
+          item = item.trim()
+          if (typeof snapshot.params[key] === item) hasParams = true
+        })
+        if (!hasParams) status.push(`${key}: 参数类型应为${o.scheme[key].split('|')[0]}。`)
+      }
     }
-
-    // if (params.length) {
-    //   params.forEach(item => {
-    //     snapshot.params.forEach(i => {
-    //       i[0] === item[0]
-    //     })
-
-    //     if (!snapshot.params[index]) {
-    //       status.push(`${item[0]}: 没有传这个参数`)
-    //     } else {
-    //       item[1] !== typeof snapshot.params[index] && status.push(`${item[0]}: 参数类型应为${item[1]}。`)
-    //     }
-    //   })
-    // }
     if (snapshot.errtype) status.push('参数超出，或最后参数非回调函数')
 
     return status
